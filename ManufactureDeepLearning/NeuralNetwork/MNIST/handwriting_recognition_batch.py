@@ -10,6 +10,7 @@ Created on Thu Jan 12 15:55:09 2017
 手書き画像認識
 
 バッチを使用したNN
+バッチ単位で推論処理を行うことで, 計算を高速に行うことができる
 """
 import math
 import numpy as np
@@ -94,8 +95,8 @@ for i in range(0, len(x), batch_size):
     
     x_batch = x[i:i+batch_size]
     y_batch = predict(network, x_batch)
-    p = np.argmax(y_batch, axis=1) #最も確率の高いものを取得
-    accuracy_cnt += np.sum(p == t[i:i+batch_size])
+    p = np.argmax(y_batch, axis=1) #最も確率の高いものの添え字を取得
+    accuracy_cnt += np.sum(p == t[i:i+batch_size]) #取得した添え字と, 教師データを比べて, 合っていたらカウント
     
 print("Accuracy:"+str(float(accuracy_cnt) / len(x)))
 

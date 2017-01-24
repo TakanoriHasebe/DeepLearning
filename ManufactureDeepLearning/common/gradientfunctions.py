@@ -9,10 +9,12 @@ Created on Fri Jan 20 11:55:43 2017
 """
 勾配法を用いる関数が記述してある
 """
-'''
+
 import numpy as np
 
+'''
 # 勾配を計算する関数
+# １行の配列の購買のみを計算する
 def numerical_gradient(f, x):
     h = 1e-4
     grad = np.zeros_like(x) # xと同じ形状の配列を生成
@@ -33,8 +35,6 @@ def numerical_gradient(f, x):
         
     return grad
 '''
-
-import numpy as np
 
 def _numerical_gradient_1d(f, x):
     h = 1e-4 # 0.0001

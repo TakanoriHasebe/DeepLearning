@@ -43,7 +43,9 @@ apple_num = 2
 tax = 1.1
 
 # layer
+# 逆伝搬時の２個目のnodeで用いる
 mul_apple_layer = MulLayer()
+# 逆伝搬時の１個目のnodeで用いる
 mul_tax_layer = MulLayer()
 
 # forward
@@ -61,7 +63,6 @@ dprice = 1
 dapple_price, dtax = mul_tax_layer.backward(dprice)
 print(dapple_price, dtax)
 dapple, dapple_num = mul_apple_layer.backward(dapple_price)
-
 print(dapple, dapple_num, dtax)
 
 

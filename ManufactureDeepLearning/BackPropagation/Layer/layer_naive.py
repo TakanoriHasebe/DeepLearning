@@ -37,13 +37,32 @@ class MulLayer:
         
         return dx, dy
 
-# 誤差逆伝搬法の加算レイヤの実装
+# りんごの値段, りんごの個数, 消費税
+apple = 100
+apple_num = 2
+tax = 1.1
 
+# layer
+mul_apple_layer = MulLayer()
+mul_tax_layer = MulLayer()
 
+# forward
+# りんご２個の計算
+apple_price = mul_apple_layer.forward(apple, apple_num)
+# りんご２個に対して, 消費税を含めた計算
+price = mul_tax_layer.forward(apple_price, tax)
+# 最終的な値段の計算
+print(price)
 
+# backward
+# 最初の誤差逆伝搬の微分の値
+# 本来であれば, softmaxなどで誤差が計算される
+dprice = 1
+dapple_price, dtax = mul_tax_layer.backward(dprice)
+print(dapple_price, dtax)
+dapple, dapple_num = mul_apple_layer.backward(dapple_price)
 
-
-
+print(dapple, dapple_num, dtax)
 
 
 

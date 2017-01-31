@@ -7,9 +7,6 @@ Created on Mon Jan 30 18:41:13 2017
 """
 
 """
-ゼロから作るDeep LearningのP.140の
-りんご２個とみかん３個の図を参考に作成された
-
 乗算レイヤと加算レイヤが存在している
 """
 
@@ -59,7 +56,7 @@ class MulLayer:
         dx = dout * self.y # xとyをひっくり返す
         dy = dout * self.x 
         
-        return dx, dys
+        return dx, dy
 
 
 

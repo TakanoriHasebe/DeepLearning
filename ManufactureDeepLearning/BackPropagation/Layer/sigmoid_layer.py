@@ -11,7 +11,7 @@ Created on Wed Feb  1 11:53:15 2017
 ゼロから作るDeep Learningの誤差逆伝搬法の
 sigmoid関数の部分を自分で実装したものである。
 # 課題
-
+逆伝搬時の1から引くところが1.0に直すべき
 """
 
 import numpy as np
@@ -26,8 +26,22 @@ class Sigmoid:
         
     # 順伝搬
     # 多次元配列で受け取るということに注意する
-    def forward(self, x, y):
-        pass
+    def forward(self, x):
+        y = 1 / (1 + np.exp(-x))
+        self.y = y
+        
+        return y
+
+    # 逆伝搬
+    def backward(self, dout):
+        dy = dout * self.y * (1 - self.y)
+        return dy
+
+
+
+
+
+
 
 
 

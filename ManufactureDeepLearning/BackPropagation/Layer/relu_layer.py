@@ -22,7 +22,7 @@ class ReLU:
     # 初期化
     # 値を保存しておく為に初期化
     def __init__(self):
-        self.x = None
+        self.x = x
         
     # 順伝搬の実装
     def forward(self, x):

@@ -6,5 +6,5 @@
 * LossFunction : 平均２乗誤差, 交差エントロピーなど, 損失関数をプログラムしたものが入っている  
 * NeuralNetwork : ３層ニューラルネットワーク, ２層で簡単に作成したニューラルネットワークが入っている  
 * OutputActivationFunction : ソフトマックス関数など, 出力関数をプログラムしたものが入っている  
-* common : Deep Learninigで用いられる上記の関数群がプログラムされて入っている  
+* common : Deep Learninigで用いられる上記の関数群が実装できる形で, プログラムされて入っている  
 

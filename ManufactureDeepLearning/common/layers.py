@@ -57,6 +57,7 @@ class Sigmoid:
         return dx
 
 # Affineレイヤ
+# バッチ学習に対応している
 class Affine:
     
     # 保存する各変数の初期化
@@ -76,9 +77,9 @@ class Affine:
                     
     # 逆伝搬
     def backward(self, dout):
-        dx = np.dot(dout, self.W.T)
-        self.dW = np.dot(self.x.T, dout)
-        self.db = np.sum(dout, axis=0)
+        dx = np.dot(dout, self.W.T) # 入力の逆伝搬
+        self.dW = np.dot(self.x.T, dout) # 重みの逆伝搬
+        self.db = np.sum(dout, axis=0) # バイアスの逆伝搬
         
         return dx
 

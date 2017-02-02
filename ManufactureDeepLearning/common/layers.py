@@ -56,5 +56,33 @@ class Sigmoid:
         
         return dx
 
+# Affineレイヤ
+class Affine:
+    
+    # 保存する各変数の初期化
+    def __init__(self, W, b):
+        self.W = W # 重み
+        self.b = b # バイアス
+        self.x = None # 入力
+        self.dW = None # 重みの微分 
+        self.db = None # バイアスの微分
+        
+    # 順伝搬
+    def forward(self, x):
+        self.x = x
+        out = np.dot(x, self.W) + self.b
+                    
+        return out
+                    
+    # 逆伝搬
+    def backward(self, dout):
+        dx = np.dot(dout, self.W.T)
+        self.dW = np.dot(self.x.T, dout)
+        self.db = np.sum(dout, axis=0)
+        
+        return dx
+
+
+
 
 

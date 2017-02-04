@@ -13,6 +13,10 @@ Created on Tue Jan 31 11:59:37 2017
 """
 
 import numpy as np
+from gradientfunctions import numerical_gradient
+from outputactivationfunctions import softmax
+from lossfunctions import cross_entropy_error
+from activatingfunctions import sigmoid
 
 # ReLUレイヤ
 class Relu:
@@ -82,6 +86,39 @@ class Affine:
         self.db = np.sum(dout, axis=0) # バイアスの逆伝搬
         
         return dx
+
+# softmax関数と誤差関数のレイヤ
+# バッチ学習に対応している
+class SoftmaxWithLoss:
+    
+    # 変数の初期化
+    def __init__(self):
+        self.loss = None # 誤差
+        self.y = None # softmaxの出力
+        self.t = None # 教師データ(one-hot-vector)
+        
+    # 順伝搬
+    def forward(self, x, t):
+        self.t = t
+        self.y = softmax(x)
+        self.loss = cross_entropy_error(self.y, self.t)
+        
+        return self.loss
+    
+    # 逆伝搬
+    def backward(self, dout = 1):
+        batch_size = self.t.shape[0]
+        dx = (self.y - self.t) / batch_size # バッチサイズの平均をとり正規化
+             
+        return dx
+
+
+
+
+
+
+
+
 
 
 

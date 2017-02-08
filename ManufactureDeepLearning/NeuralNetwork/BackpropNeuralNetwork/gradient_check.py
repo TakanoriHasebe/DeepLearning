@@ -11,8 +11,8 @@ Created on Mon Feb  6 14:28:23 2017
 数値微分の匂配と, 誤差逆伝搬法で求めた匂配が等しいかをチェックする。
 """
 
-import sys
-sys.path.append('../MNIST/*')
+import sys,os
+sys.path.append(os.pardir)
 import numpy as np
 from mnist import load_mnist
 from two_layer_net import TwoLayerNet

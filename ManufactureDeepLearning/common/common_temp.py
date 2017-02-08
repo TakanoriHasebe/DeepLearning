@@ -41,6 +41,38 @@ print(a)
 b = a.reverse()
 print(b)
 
+# 辞書
+d = {}
+d['A1'] = np.array([1,2,3])
+d['A2'] = np.array([1,2,4])
+print(d)
+for i in d.values():
+    
+    print(i)
+    
+# クラス内の変数にアクセス
+class Temp():
+    
+    def __init__(self):
+        self.a = None
+
+    def b(self, n):
+        
+        self.a = n
+        
+    
+
+t = Temp()
+t.b(5)
+print(t.a)
+
+
+
+
+
+
+
+
 
 
 

@@ -11,9 +11,8 @@ Created on Sat Feb  4 11:27:06 2017
 誤差逆伝搬法をレイヤを用いて実装している
 """
 
-
 import sys
-sys.path.append('../../*')
+sys.path.append('/Users/Takanori/Desktop/AI/DeepLearning/ManufactureDeepLearning/common')
 import numpy as np
 from common.gradientfunctions import numerical_gradient
 from common.outputactivationfunctions import softmax
@@ -48,14 +47,19 @@ class TwoLayerNet:
     
     def predict(self, x):
         for layer in self.layers.values():
+            print(layer)
+            print(x.shape)
             x = layer.forward(x)
-
+            print(x.shape)
+            # print(x[0]) # 最初のデータをみる
+            print(' ')
+            
         return x
     
     # x:入力データ, t:教師データ
     def loss(self, x, t):
-        y = self.predict(x)
-        return self.lastLayer.forward(y, t)
+        y = self.predict(x) # softmax関数までの順伝搬
+        return self.lastLayer.forward(y, t) 
     
     def accuracy(self, x, t):
         y = self.predict(x)
@@ -81,7 +85,7 @@ class TwoLayerNet:
         self.loss(x, t)
         
         # backward
-        dout = 1 
+        dout = 1
         dout = self.lastLayer.backward(dout)
         
         layers = list(self.layers.values())
@@ -91,7 +95,7 @@ class TwoLayerNet:
         
         # 設定
         # ここの書き方
-        # 重みとバイアスの更新
+        # 重みとバイアスを更新すべき微小量の計算
         grads = {}
         grads['W1'] = self.layers['Affine1'].dW
         grads['b1'] = self.layers['Affine1'].db

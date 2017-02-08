@@ -101,17 +101,25 @@ class SoftmaxWithLoss:
     def forward(self, x, t):
         self.t = t
         self.y = softmax(x)
-        # print(self.t.shape)
-        # print(self.y.shape)
+        print('softmax関数の出力の形状と, 教師データの形状')
+        print(self.y.shape)
+        print(self.t.shape)
         self.loss = cross_entropy_error(self.y, self.t)
-    
-        return self.loss
+        print(self.loss)
+        print(' ')
+        
+        return self.loss # 交差エントロピーにより, 誤差が算出された
     
     # 逆伝搬
     def backward(self, dout = 1):
         batch_size = self.t.shape[0]
-        dx = (self.y - self.t) / batch_size # バッチサイズの平均をとり正規化
-             
+        
+        dx = (self.y - self.t) / batch_size # softmaxの出力と教師データをバッチの個数で割る。
+        print('softmaxの出力と教師データの差')
+        print(dx.shape)
+        print(dx)
+        print(' ')
+        
         return dx
 
 

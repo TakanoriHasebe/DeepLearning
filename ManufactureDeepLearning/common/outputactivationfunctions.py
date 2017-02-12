@@ -13,7 +13,8 @@ Created on Fri Jan 20 11:53:41 2017
 import numpy as np
 
 # softmax関数
-
+"""
+# 以下のコードは自分で作成した
 def softmax(a):
     c = np.max(a)
     exp_a = np.exp(a-c) #オーバーフローを回避
@@ -21,8 +22,9 @@ def softmax(a):
     y = exp_a / sum_exp_a
     
     return y
-
 """
+
+# softmax関数
 def softmax(x):
     if x.ndim == 2:
         x = x.T
@@ -32,10 +34,7 @@ def softmax(x):
 
     x = x - np.max(x) # オーバーフロー対策
     return np.exp(x) / np.sum(np.exp(x))
-"""
-arr = np.array([[1, 2, 3], [1, 2, 3]])
 
-print(softmax(arr))
 
 
 

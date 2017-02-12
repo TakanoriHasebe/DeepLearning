@@ -12,7 +12,6 @@ Created on Tue Jan 24 11:11:00 2017
 
 import sys
 sys.path.append('../../')
-
 '''
 from common.gradientfunctions import numerical_gradient
 from common.outputactivationfunctions import softmax
@@ -54,6 +53,7 @@ for i in range(iters_num):
         
     # 学習経過の記録
     loss = network.loss(x_batch, t_batch)
+    # print(loss)
     train_loss_list.append(loss)
 
 print('len(train_loss_list):'+str(len(train_loss_list)))

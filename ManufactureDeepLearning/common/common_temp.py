@@ -42,15 +42,23 @@ b = a.reverse()
 print(b)
 
 # 辞書
+print(' ')
 d = {}
 d['A1'] = np.array([1,2,3])
 d['A2'] = np.array([1,2,4])
 print(d)
-for i in d.values():
+
+temp = list(d.values())
+print(temp)
+temp.reverse()
+print('逆順にアクセスする')
+for i in temp:
     
     print(i)
     
 # クラス内の変数にアクセス
+print(' ')
+print('クラス内の変数にアクセス')
 class Temp():
     
     def __init__(self):
@@ -60,7 +68,6 @@ class Temp():
         
         self.a = n
         
-    
 
 t = Temp()
 t.b(5)

@@ -12,7 +12,7 @@ Created on Mon Feb  6 14:28:23 2017
 """
 
 import sys,os
-sys.path.append(os.pardir)
+sys.path.append('../MNIST/')
 import numpy as np
 from mnist import load_mnist
 from two_layer_net import TwoLayerNet
@@ -25,13 +25,12 @@ network = TwoLayerNet(input_size=784, hidden_size=50, output_size=10)
 x_batch = x_train[:3] # 学習データの読み込み
 t_batch = t_train[:3] # 教師データの読み込み
 
-print('学習データの形状 : '+str(x_batch.shape))
-print('教師データの形状 : '+str(t_batch.shape))
-print(' ')
+# print('学習データの形状 : '+str(x_batch.shape))
+# print('教師データの形状 : '+str(t_batch.shape))
+# print(' ')
 
 # grad_numerical = network.numerical_gradient(x_batch, t_batch)
 grad_backprop = network.gradient(x_batch, t_batch)
-
 
 
 """

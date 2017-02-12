@@ -81,6 +81,9 @@ class Affine:
                     
     # 逆伝搬
     def backward(self, dout):
+        # print('dout : '+str(dout))
+        # print(self.W.T.shape)
+        # print('self.W.T : '+str(self.W.T))
         dx = np.dot(dout, self.W.T) # 入力の逆伝搬
         self.dW = np.dot(self.x.T, dout) # 重みの逆伝搬
         self.db = np.sum(dout, axis=0) # バイアスの逆伝搬
@@ -101,12 +104,12 @@ class SoftmaxWithLoss:
     def forward(self, x, t):
         self.t = t
         self.y = softmax(x)
-        print('softmax関数の出力の形状と, 教師データの形状')
-        print(self.y.shape)
-        print(self.t.shape)
+        # print('softmax関数の出力の形状と, 教師データの形状')
+        # print(self.y.shape)
+        # print(self.t.shape)
         self.loss = cross_entropy_error(self.y, self.t)
-        print(self.loss)
-        print(' ')
+        # print(self.loss)
+        # print(' ')
         
         return self.loss # 交差エントロピーにより, 誤差が算出された
     
@@ -114,11 +117,8 @@ class SoftmaxWithLoss:
     def backward(self, dout = 1):
         batch_size = self.t.shape[0]
         
+        # 以下がこのレイヤの誤差逆伝搬になっている
         dx = (self.y - self.t) / batch_size # softmaxの出力と教師データをバッチの個数で割る。
-        print('softmaxの出力と教師データの差')
-        print(dx.shape)
-        print(dx)
-        print(' ')
         
         return dx
 

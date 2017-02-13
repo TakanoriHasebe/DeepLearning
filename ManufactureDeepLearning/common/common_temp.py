@@ -73,9 +73,16 @@ t = Temp()
 t.b(5)
 print(t.a)
 
+# 辞書
+d = {}
+d['W1'] = np.array([1,2,3])
+d['W2'] = np.array([1,2,3,4])
+v = {}
 
-
-
+# itemsでどちらも表示
+for key, val in d.items():
+    print(key, val)
+    v[key] = np.zeros_like(val)
 
 
 

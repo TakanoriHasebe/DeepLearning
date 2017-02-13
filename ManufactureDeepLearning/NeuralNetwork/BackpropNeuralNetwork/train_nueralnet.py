@@ -10,7 +10,7 @@ Created on Thu Feb  9 10:09:17 2017
 誤差逆伝搬法を用いいたMNISTの学習
 """
 
-import sys,os
+import sys
 sys.path.append('../../')
 import numpy as np
 from mnist import load_mnist

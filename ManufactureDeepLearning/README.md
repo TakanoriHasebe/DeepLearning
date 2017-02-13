@@ -7,5 +7,6 @@
 * NeuralNetwork : ３層ニューラルネットワーク, ２層で簡単に作成したニューラルネットワークが入っている  
 * OutputActivationFunction : ソフトマックス関数など, 出力関数をプログラムしたものが入っている  
 * common : Deep Learninigで用いられる上記の関数群が実装できる形で, プログラムされて入っている 
-* Optimisation : 勾配の最適化手法のプログラムが入っている   
+* Optimisation : 勾配の最適化手法のプログラムが入っている  
+* ActivationDistribution : 隠れ層（活性化関数の後の出力データ）の分布を観察する。    
 * temp : 関数を書く際に, numpyなどの使い方を試すためのプログラムが入っている。  

@@ -13,7 +13,7 @@ Created on Sat Feb  4 11:27:06 2017
 
 import sys
 # sys.path.append('/Users/Takanori/Desktop/AI/DeepLearning/ManufactureDeepLearning/')
-sys.path.append('../../')
+sys.path.append('../../common')
 import numpy as np
 from common.gradientfunctions import numerical_gradient
 from common.outputactivationfunctions import softmax

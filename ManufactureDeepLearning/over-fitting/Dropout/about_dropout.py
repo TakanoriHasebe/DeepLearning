@@ -29,11 +29,13 @@ class Dropout:
     def backward(self, dout):
         return dout * self.mask
 
-
-
-
-
-
-
+arr = np.random.rand(10)
+arr1 = np.random.rand(*arr.shape) # 
+print(arr1.shape)
+mask = None
+mask = arr1 > 0.5
+print(arr1)
+print(mask)
+print(arr1 * mask)
 
 

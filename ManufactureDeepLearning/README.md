@@ -1,5 +1,6 @@
 ### フォルダの説明 
 
+* search-hyper-parameter : ニューラルネットワークのハイパーパラメーターを探索する。  
 * make-data-set : MNISTデータからDeep Learningの訓練データ, 検証データ, テストデータを作成する手順
 * over-fitting : 過学習に関するプログラムが入っている。  
 * backpropagation : 誤差逆伝播法で用いられるものが入っている。例. 乗算レイヤ, 加算レイヤなど     

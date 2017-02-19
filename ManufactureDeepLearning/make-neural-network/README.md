@@ -1,3 +1,3 @@
 ## プログラムの説明  
 
-* 5-layer-neural-network.py : ５層のニューラルネットワークでMNISTを学習する  
+* multi-layer-network.py : 多層のニューラルネットワーク。最初はMNISTを学習する。    

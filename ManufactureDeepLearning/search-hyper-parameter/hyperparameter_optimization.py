@@ -15,7 +15,7 @@ Created on Fri Feb 17 09:34:08 2017
 """
 
 import sys, os
-sys.path.append('../')
+sys.path.append('../common')
 sys.path.append('../dataset')
 from mnist import load_mnist
 import numpy as np
@@ -32,6 +32,7 @@ lr = 10 ** np.random.uniform(-6, -2)
 
 (x_train, t_train), (x_test, t_test) = load_mnist(normalize=True)
 
+
 # 高速化のため訓練データの削減
 x_train = x_train[:500]
 t_train = t_train[:500]
@@ -45,6 +46,7 @@ t_val = t_train[:validation_num]
 x_train = x_train[validation_num:]
 t_train = t_train[validation_num:]
 
+# ニューラルネットワーク
 def __train(lr, weight_decay, epocs=50):
     network = MultiLayerNet(input_size=784, hidden_size_list=[100, 100, 100, 100, 100, 100],
                             output_size=10, weight_decay_lambda=weight_decay)

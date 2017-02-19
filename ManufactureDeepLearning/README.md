@@ -1,5 +1,6 @@
 ### フォルダの説明 
 
+* make-neural-network : 自分で作成したニューラルネットワークが入っている  
 * search-hyper-parameter : ニューラルネットワークのハイパーパラメーターを探索する。  
 * make-data-set : MNISTデータからDeep Learningの訓練データ, 検証データ, テストデータを作成する手順
 * over-fitting : 過学習に関するプログラムが入っている。  

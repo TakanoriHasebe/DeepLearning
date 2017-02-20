@@ -90,7 +90,7 @@ class Affine:
         
         return dx
 
-# softmax関数と誤差関数のレイヤ
+# softmax関数と誤差関数（cross_entropy_error）のレイヤ
 # バッチ学習に対応している
 class SoftmaxWithLoss:
     

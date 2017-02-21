@@ -101,6 +101,17 @@ print(layers)
 layers.reverse()
 print(layers)
 
+# バッチ学習
+arr = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+size = 2
+batch_mask = np.random.choice(arr.shape[0], size)
+print(batch_mask)
+arr0 = arr[batch_mask]
+print(arr0)
+
+
+
+
 
 
 

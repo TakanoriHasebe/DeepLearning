@@ -25,14 +25,17 @@ Created on Sun Feb 19 14:25:35 2017
 9. ニューラルネットワークの全体の設計図がわかっていない
 10. 逆伝搬時の層を反対にするところ
 11. 最終的に勾配を返したいので, 勾配の辞書を作成する
-参考url : https://github.com/oreilly-japan/deep-learning-from-scratch/blob/master/ch06/hyperparameter_optimization.py
+参考url : https://github.com/oreilly-japan/deep-learning-from-scratch/blob/master/common/multi_layer_net.py
 """
 
 import sys, os
 sys.path.append('../common')  # 親ディレクトリのファイルをインポートするための設定
+sys.path.append('../dataset')  # 親ディレクトリのファイルをインポートするための設定
 from layers import Sigmoid, Affine, SoftmaxWithLoss # 誤差逆伝搬の時に必要
 from collections import OrderedDict
 import numpy as np
+from mnist import load_mnist
+
 
 # 多層ニューラルネットワークの設計
 # 最初は２層で設計してみる
@@ -118,9 +121,11 @@ class MultiLayerNetwork:
             
         return grads
         
-    
+# データセットの読み込み    
+(x_train, t_train), (x_test, t_test) = \
+    load_mnist(normalize=True, one_hot_label=True)
         
-        
+
 
 
 

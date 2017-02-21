@@ -15,7 +15,7 @@ multi-layer-network.py : 最初はMNISTを学習。誤差逆伝播法を用い, 
 9. ニューラルネットワークの全体の設計図がわかっていない  
 10. 逆伝搬時の層を反対にするところ  
 11. 最終的に勾配を返したいので, 勾配の辞書を作成する  
-参考url : https://github.com/oreilly-japan/deep-learning-from-scratch/blob/master/ch06/hyperparameter_optimization.py  
+参考url : https://github.com/oreilly-japan/deep-learning-from-scratch/blob/master/common/multi_layer_net.py   
   
 ---
 trainer.py : ニューラルネットワークの訓練を行う。  

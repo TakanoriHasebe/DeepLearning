@@ -1,6 +1,6 @@
 ## プログラムの説明  
 ---
-multi-layer-network.py : 最初はMNISTを学習。誤差逆伝播法を用い, 勾配を算出する。   
+multi_layer_network.py : 最初はMNISTを学習。誤差逆伝播法を用い, 勾配を算出する。   
 
 * 課題点について
 0. 重み, バイアスのパラメータと層の設計はクラス内の他の関数でも使うので, selfにすべき  
@@ -28,3 +28,7 @@ make_trainer.py : multi_layer_network.pyを用いて勾配の算出を行い,
 4. 勾配の最適化手法の初期化  
 5. 勾配の更新でパラメータをどこから持ってくるかについて  
 
+---  
+learning_mnsit.py : multi_layer_network.pyとmake_trainer.pyを用いて実際の学習を行うプログラム  
+
+* 課題点について  

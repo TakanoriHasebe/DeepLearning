@@ -1,7 +1,6 @@
 ## プログラムの説明  
 ---
-multi-layer-network.py : 最初はMNISTを学習。誤差逆伝播法を用い, 勾配を算出する。  
-trainer.py : ニューラルネットワークの訓練を行う。    
+multi-layer-network.py : 最初はMNISTを学習。誤差逆伝播法を用い, 勾配を算出する。   
 
 * 課題点について
 0. 重み, バイアスのパラメータと層の設計はクラス内の他の関数でも使うので, selfにすべき  
@@ -18,3 +17,8 @@ trainer.py : ニューラルネットワークの訓練を行う。
 11. 最終的に勾配を返したいので, 勾配の辞書を作成する  
 参考url : https://github.com/oreilly-japan/deep-learning-from-scratch/blob/master/ch06/hyperparameter_optimization.py  
   
+---
+trainer.py : ニューラルネットワークの訓練を行う。  
+
+* 課題点について  
+

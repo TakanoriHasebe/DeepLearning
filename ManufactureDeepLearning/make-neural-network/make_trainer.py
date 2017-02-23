@@ -17,7 +17,7 @@ Created on Tue Feb 21 09:57:36 2017
 5. 勾配の更新でパラメータをどこから持ってくるかについて
 6. ミニバッチ学習の際の繰り返しの回数の設定について
 7. ミニバッチ学習とバッチ学習
-6. train_step関数とtrain関数
+8. train_step関数とtrain関数
 """
 
 import sys, os

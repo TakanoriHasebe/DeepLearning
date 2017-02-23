@@ -109,6 +109,37 @@ print(batch_mask)
 arr0 = arr[batch_mask]
 print(arr0)
 
+# iter_per_epochについて
+iter_per_epoch = max(60 / 20, 1)
+print(iter_per_epoch)
+iter_per_epoch = max(0 / 20, 1)
+print(iter_per_epoch)
+
+# if文の確認
+current_iter = 0
+iter_per_epoch = max(60 / 20, 1)
+if current_iter % iter_per_epoch == 0:
+
+    print('True')
+
+# if文の確認（None）
+evaluate_sample_num_per_epoch = None
+if not None is None:
+    
+    print('None')
+
+# argmaxについて
+y = np.array([0.01, 0.2, 0.4, 1])
+y = np.argmax(y, axis=0)
+print(y)
+
+
+
+
+
+
+
+
 
 
 

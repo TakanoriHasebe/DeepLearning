@@ -25,6 +25,7 @@ Created on Sun Feb 19 14:25:35 2017
 9. ニューラルネットワークの全体の設計図がわかっていない
 10. 逆伝搬時の層を反対にするところ
 11. 最終的に勾配を返したいので, 勾配の辞書を作成する
+12. accuracy関数の書き方。loss関数を用いるのではなく, predict関数を用いる
 参考url : https://github.com/oreilly-japan/deep-learning-from-scratch/blob/master/common/multi_layer_net.py
 """
 
@@ -92,10 +93,10 @@ class MultiLayerNetwork:
     
     # 正確さを算出
     # ミニバッチ対応
-    # このクラス内では用いない
-    def accuracy(self):
+    def accuracy(self, x, t):
         
-        pass
+        
+        
     
     # 勾配を算出する関数
     def gradient(self, x, t):
@@ -121,10 +122,7 @@ class MultiLayerNetwork:
             
         return grads
         
-# データセットの読み込み    
-(x_train, t_train), (x_test, t_test) = \
-    load_mnist(normalize=True, one_hot_label=True)
-        
+
 
 
 

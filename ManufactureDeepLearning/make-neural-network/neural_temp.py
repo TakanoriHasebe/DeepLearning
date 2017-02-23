@@ -15,6 +15,8 @@ sys.path.append('../common')  # 親ディレクトリのファイルをインポ
 from layers import Sigmoid, Affine, SoftmaxWithLoss # 誤差逆伝搬の時に必要
 from collections import OrderedDict
 import numpy as np
+from common import optimizer
+
 
 # 最初の重みの設定
 input_size = 3
@@ -132,18 +134,46 @@ if not None is None:
 y = np.array([0.01, 0.2, 0.4, 1])
 y = np.argmax(y, axis=0)
 print(y)
+y = np.array([[1, 2, 3], [4, 5, 6], [1, 10, 3]])
+y = np.argmax(y, axis=0)
+print(y)
+
+# if文の確認(ndim, :), argmaxについて
+t = np.array([[0, 1, 0, 0], [1, 0, 0, 0], [1, 0, 0, 10]])
+print(t.ndim)
+if t.ndim != 1 : t = np.argmax(t, axis=1)
+print(t)
+t = np.array([0, 1, 0, 0])
 
 
+# numpyのsum
+y = np.array([1, 2, 0, 1, 1])
+t = np.array([1, 2, 1, 0, 1])
+print(np.sum(y == t) / float(len(y)))
 
+# 勾配の確認, 他のクラスを呼び出す
+optimizer = optimizer.SGD()
+params = {}
+grads = {}
+params['W1'] = np.array([1, 2, 3, 4], dtype=float)
+grads['W1'] = np.array([0.1, 0.2, 0.1, 0.3])
+print(params)
+print(grads)
+optimizer.update(params, grads)
+print(params)
+grads['W1'] = np.array([0.5, 0.02, 0.11, 0.33])
+optimizer.update(params, grads)
+print(grads, params)
 
+# 重みの種類
+activation_type = 'Sigmoid'
+if activation_type == 'Sigmoid' or 'tanh':
+    
+    print('True')
 
-
-
-
-
-
-
-
+# 重みの初期化
+weight_linear = np.random.randn(500, 50) / np.sqrt(50)
+print(weight_linear.shape)
 
 
 

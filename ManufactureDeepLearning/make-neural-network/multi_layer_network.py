@@ -25,7 +25,8 @@ Created on Sun Feb 19 14:25:35 2017
 9. ニューラルネットワークの全体の設計図がわかっていない
 10. 逆伝搬時の層を反対にするところ
 11. 最終的に勾配を返したいので, 勾配の辞書を作成する
-12. accuracy関数の書き方。loss関数を用いるのではなく, predict関数を用いる
+12. accuracy関数の書き方。
+
 参考url : https://github.com/oreilly-japan/deep-learning-from-scratch/blob/master/common/multi_layer_net.py
 """
 
@@ -33,6 +34,7 @@ import sys, os
 sys.path.append('../common')  # 親ディレクトリのファイルをインポートするための設定
 sys.path.append('../dataset')  # 親ディレクトリのファイルをインポートするための設定
 from layers import Sigmoid, Affine, SoftmaxWithLoss # 誤差逆伝搬の時に必要
+from decision_weight import DecisionWeight # 重みの初期設定
 from collections import OrderedDict
 import numpy as np
 from mnist import load_mnist
@@ -49,15 +51,23 @@ class MultiLayerNetwork:
     hidden_size : 隠れ層のサイズ
     output_size : NNの出力サイズ
     """
-    def __init__(self, input_size, output_size, hidden_size):
+    
+    # 1. layer_numを付け加える
+    # 2. 入力層, 隠れ層, 出力層を配列で受け取る
+    def __init__(self, input_size, hidden_size, output_size):
+        
+        # 重みのインスタンスの作成
+        weight = DecisionWeight()
         
         # 重み, バイアス
         self.params = {}
         # 入力層の重み, バイアスの設定
-        self.params['W1'] = np.random.randn(input_size, hidden_size)
+        # self.params['W1'] = np.random.randn(input_size, hidden_size)
+        self.params['W1'] = weight.decision('Sigmoid', input_size, hidden_size)
         self.params['b1'] = np.zeros(hidden_size)
         # 出力層の重み, バイアスの設定
-        self.params['W2'] = np.random.randn(hidden_size, output_size)
+        # self.params['W2'] = np.random.randn(hidden_size, output_size)
+        self.params['W2'] = weight.decision('Sigmoid', hidden_size, output_size)
         self.params['b2'] = np.zeros(output_size)
         
         # ニューラルネットワークの層を設計する
@@ -93,9 +103,21 @@ class MultiLayerNetwork:
     
     # 正確さを算出
     # ミニバッチ対応
+    # 訓練データと教師データを受け取る
     def accuracy(self, x, t):
         
+        y = self.predict(x)
         
+        if t.ndim != 1:
+            y = np.argmax(y, axis=1)
+            t = np.argmax(t, axis=1)
+        else:
+            y = np.argmax(y, axis=0)
+            t = np.argmax(t, axis=0)
+            
+        accuracy = np.sum(y == t) / float(x.shape[0])
+        
+        return accuracy        
         
     
     # 勾配を算出する関数
@@ -113,7 +135,7 @@ class MultiLayerNetwork:
         layers.reverse()
 
         for layer in layers:
-            dout = layers.backward(dout)
+            dout = layer.backward(dout)
             
         # 勾配を返す
         grads = {}

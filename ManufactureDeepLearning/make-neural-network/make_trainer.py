@@ -18,6 +18,9 @@ Created on Tue Feb 21 09:57:36 2017
 6. ミニバッチ学習の際の繰り返しの回数の設定について
 7. ミニバッチ学習とバッチ学習
 8. train_step関数とtrain関数
+9. 勾配(optimizer)の書き方
+
+参考url : https://github.com/oreilly-japan/deep-learning-from-scratch/blob/master/common/trainer.py
 """
 
 import sys, os
@@ -36,17 +39,18 @@ class Trainer:
         self.t_train = t_train # 学習データ
         self.x_test = x_test # テストデータ
         self.t_test = t_test # テストデータ
-        self.batch_size = mini_batch_size # バッチ学習のサイズ
-        self.train_size = x_train.shape(0) # 学習する配列のサイズ
-        self.optimizer = optimizer.SGD # 最適化にSGDを用いる
-        self.verbose = verbose # 冗長性
-        self.train_size = train_size.shape[0] # 学習サイズ 
-        self.current_iter = 0 # 現在の繰り返し回数
-        self.iter_per_epoch = max(train_size/mini_batch_size, 1) # 0になることを避ける。ミニバッチ学習の繰り返し回数
-        self.current_epoch = 0 # 現在のepoch数
-        self.max_iter = epochs * self.iter_per_epoch
         
-    
+        self.train_size = self.x_train.shape[0] # 学習サイズ 
+        self.current_iter = 0 # 現在の繰り返し回数
+        self.iter_per_epoch = int(max(self.train_size/mini_batch_size, 1)) # 0になることを避ける。ミニバッチ学習の繰り返し回数
+        self.current_epoch = 0 # 現在のepoch数
+        self.max_iter = epochs * self.iter_per_epoch # 最終的な繰り返し回数
+        self.batch_size = mini_batch_size # バッチ学習のサイズ
+        
+        
+        self.optimizer = optimizer.SGD() # 最適化にSGDを用いる
+        self.verbose = verbose # 冗長性
+        
         self.train_loss_list = list() # 学習時の誤差リスト
         self.train_acc_list = list() # 学習データの正確さ
         self.test_acc_list = list() # テストデータの正確さ
@@ -91,6 +95,5 @@ class Trainer:
         
         test_acc = self.network.accuracy(self.x_test, self.t_test)
 
-        if self.verbose:
-            print("=============== Final Test Accuracy ===============")
-            print("test acc:" + str(test_acc))
+        print("=============== Final Test Accuracy ===============")
+        print("test acc:" + str(test_acc))

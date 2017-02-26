@@ -26,7 +26,7 @@ class DecisionWeight:
         weight_linear = np.random.randn(input_node_num, output_node_num) / np.sqrt(input_node_num)
         weight_non_linear = np.random.randn(input_node_num, output_node_num) * np.sqrt(2.0 / input_node_num)
         
-        if activation_type == 'Sigmoid' or 'tanh':
+        if activation_type == 'Sigmoid' or 'Tanh':
             return weight_linear
         elif activation_type == 'ReLU':
             return weight_non_linear

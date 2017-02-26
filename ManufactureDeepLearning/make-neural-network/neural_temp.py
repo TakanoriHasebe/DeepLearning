@@ -175,6 +175,15 @@ if activation_type == 'Sigmoid' or 'tanh':
 weight_linear = np.random.randn(500, 50) / np.sqrt(50)
 print(weight_linear.shape)
 
+# ミニバッチ学習
+x_train = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]])
+train_size = x_train.shape[0]
+batch_size = 2
+batch_mask = np.random.choice(train_size, batch_size)
+x_train_batch = x_train[batch_mask]
+print(batch_mask)
+print(x_train_batch)
+
 
 
 

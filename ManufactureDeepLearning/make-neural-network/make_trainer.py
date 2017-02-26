@@ -97,3 +97,5 @@ class Trainer:
 
         print("=============== Final Test Accuracy ===============")
         print("test acc:" + str(test_acc))
+        
+        return test_acc

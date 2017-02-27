@@ -52,6 +52,7 @@ class BatchNormalization:
                         
         if train_flg:
             mu = x.mean(axis=0)
+            print('mu:'+str(mu))
             xc = x - mu
             var = np.mean(xc**2, axis=0)
             std = np.sqrt(var + 10e-7)
@@ -64,8 +65,9 @@ class BatchNormalization:
             self.running_mean = self.momentum * self.running_mean + (1-self.momentum) * mu
             self.running_var = self.momentum * self.running_var + (1-self.momentum) * var            
         else:
-            # xc = x - self.running_mean
-            xn = xc / ((np.sqrt(self.running_var + 10e-7)))
+            xc = x - self.running_mean
+            xn = xc / ((np.sqrt(self.std + 10e-7)))
+            
          
         return xn
         # out = self.gamma * xn + self.beta 
@@ -98,27 +100,15 @@ class BatchNormalization:
         return dx
     
 batch_norm = BatchNormalization(1, 0) 
-mini_batch_array = np.random.randn(5, 10)
+mini_batch_array = np.array([[1, 2, 3, 4], [5, 6, 7, 8]])
+# mini_batch_array = np.array([[1, 2, 3, 4]])
 res = batch_norm.forward(mini_batch_array)
-print('res:'+str(res))
+# print('res:'+str(res))
 print('res.mean:'+str(np.mean(res)))
 print('res.var:'+str(np.var(res)))
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 def batchnorm_forward(x, gamma, beta, eps):
-
   N, D = x.shape
 
   #step1: calculate mean
@@ -152,6 +142,12 @@ def batchnorm_forward(x, gamma, beta, eps):
   cache = (xhat,gamma,xmu,ivar,sqrtvar,var,eps)
 
   return out, cache
+
+
+
+
+
+
 
 
 

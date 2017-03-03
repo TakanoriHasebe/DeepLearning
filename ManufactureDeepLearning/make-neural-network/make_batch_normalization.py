@@ -12,6 +12,8 @@ Batch Normalizationを行うクラスを作成する
 1. 計算グラフについて忘れている
 2. batch_normalizationについて間違った解釈をしている
    batch_normalizationは強制的にアクティベーションの分布に適度な広がりを持たせる
+3. 分散が0になった時の為に, mini_batch_array.std()でなく, np.sqrt(var + 10-9)にしてある
+4. 活性化関数に入力するミニバッチ全体の配列に対して, データの標準化をかけるということに注意
 
 参考url
 https://github.com/oreilly-japan/deep-learning-from-scratch/blob/master/common/layers.py
@@ -23,74 +25,8 @@ import time
 from scipy.stats import zscore
 
 
-# ミニバッチの配列
-# mini_batch_array = np.random.randn(2, 10)
-# mini_batch_array = np.array([[1, 2, 3, 4]])
-mini_batch_array = np.array([[1, 2, 3, 4], [5, 6, 7, 8]])
-mini_batch_array = np.array([[1, 2, 3, 4]])
-mean = np.mean(mini_batch_array)
-var = np.var(mini_batch_array)
-minus = mini_batch_array - mean
-norm = minus / np.sqrt(var + 10-7)
-print(np.mean(norm))
-print(np.var(norm))
-print('')
-
-
-
-
-
-"""
-start = time.time()
-# print('mini_batch_array:'+str(mini_batch_array))
-print('mini_batch_array.shape:'+str(mini_batch_array.shape))
-
-# 平均と分散
-mean = np.mean(mini_batch_array, axis=1)
-
-var = np.var(mini_batch_array, axis=1)
-# print('mean:'+str(mean))
-# print('var:'+str(var))
-
-# データの正規化(引き算をするためにfor文を用いる必要がある)
-# 10e-7
-# mini_batch_norm_test = (mini_batch_array[0] - mean) / np.sqrt(var + 10e-7)
-# print(mini_batch_norm_test)
-# print((mini_batch_array - mean) / np.sqrt(var + 10e-7))
-# mini_batch_array_norm = (mini_batch_array - mean) / np.sqrt(var + 10e-7)
-for i in range(len(mini_batch_array)):
-    if i==0:
-        
-        mini_batch_array_norm = (mini_batch_array[i] - mean[i]) / np.sqrt(var[i] + 10e-7)
-    else:
-        
-        mini_batch_array_norm = np.vstack((mini_batch_array_norm, (mini_batch_array[i] - mean[i]) / np.sqrt(var[i] + 10e-7)))
-# print('mini_batch_array_norm:'+str(mini_batch_array_norm))
-print('mini_batch_array_norm.mean:'+str(np.mean(mini_batch_array_norm)))
-print('mini_batch_array_norm.var:'+str(np.var(mini_batch_array_norm)))
-elapsed_time = time.time() - start
-print("elapsed_time:{0}".format(elapsed_time))
-
-print('')
-print('axis=0')
-print('mini_batch_array.shape:'+str(mini_batch_array.shape))
-start = time.time()
-
-# 平均と分散
-mean = np.mean(mini_batch_array, axis=0)
-var = np.var(mini_batch_array, axis=0)
-
-# 正規化
-mini_batch_array_norm = (mini_batch_array - mean) / np.sqrt(var + 10e+7)
-# print('mini_batch_norm_array:'+str(mini_batch_norm_array))
-print('mini_batch_array_norm.mean:'+str(np.mean(mini_batch_array_norm)))
-print('mini_batch_array_norm.var:'+str(np.var(mini_batch_array_norm)))
-elapsed_time = time.time() - start
-print("elapsed_time:{0}".format(elapsed_time))
-"""
-"""
-
 def batchnorm_forward(x, gamma, beta, eps):
+
   N, D = x.shape
 
   #step1: calculate mean
@@ -124,8 +60,178 @@ def batchnorm_forward(x, gamma, beta, eps):
   cache = (xhat,gamma,xmu,ivar,sqrtvar,var,eps)
 
   return out, cache
-"""
 
+# ミニバッチの配列
+# mini_batch_array = np.random.randn(2, 3)
+print('順伝搬の計算')
+mini_batch_array = np.array([[1, 2, 3, 4], [5, 6, 7, 8]])
+out, cache = batchnorm_forward(mini_batch_array, 1.0, 0.0, 10-9)
+print('out.shape:'+str(out.shape))
+print(np.mean(out))
+print(np.var(out))
+print(cache)
+
+
+def batchnorm_backward(dout, cache):
+
+  #unfold the variables stored in cache
+  xhat,gamma,xmu,ivar,sqrtvar,var,eps = cache
+
+  #get the dimensions of the input/output
+  N,D = dout.shape
+
+  #step9
+  dbeta = np.sum(dout, axis=0)
+  dgammax = dout #not necessary, but more understandable
+
+  #step8
+  dgamma = np.sum(dgammax*xhat, axis=0)
+  dxhat = dgammax * gamma
+
+  #step7
+  divar = np.sum(dxhat*xmu, axis=0)
+  dxmu1 = dxhat * ivar
+
+  #step6
+  dsqrtvar = -1. /(sqrtvar**2) * divar
+
+  #step5
+  dvar = 0.5 * 1. /np.sqrt(var+eps) * dsqrtvar
+
+  #step4
+  dsq = 1. /N * np.ones((N,D)) * dvar
+
+  #step3
+  dxmu2 = 2 * xmu * dsq
+
+  #step2
+  dx1 = (dxmu1 + dxmu2)
+  dmu = -1 * np.sum(dxmu1+dxmu2, axis=0)
+
+  #step1
+  dx2 = 1. /N * np.ones((N,D)) * dmu
+
+  #step0
+  dx = dx1 + dx2
+
+  return dx, dgamma, dbeta
+print('')
+print('逆伝搬の計算')
+dx, dgamma, dbeta = batchnorm_backward(out, cache)
+print(dx)
+print(dgamma)
+print(dbeta)
+
+class BatchNormalization:
+    
+    # 初期化変数
+    def __init__(self, gamma, beta, eps):
+        
+        # 変数群
+        self.gamma = gamma
+        self.beta = beta
+        self.eps = eps
+        
+        # forward
+        self.mu = None # 平均
+        self.xmu = None # ミニバッチから平均を減算
+        self.sq = None # 分散を求めるために必要
+        self.var = None # 分散
+        self.sqrtvar = None # 標準偏差
+        self.ivar = None # 標準偏差の反転
+        self.xhat = None # Normalizationした配列
+        
+        # backward
+        
+
+    # 順伝搬
+    def forward(self, x):
+        
+        N, D = x.shape
+        
+        # 平均の算出
+        self.mu = 1. / N * np.sum(x, axis=0)
+        
+        # ミニバッチから平均を引く
+        self.xmu = x - self.mu
+        
+        # 分散を計算するのに必要
+        self.sq = self.xmu ** 2
+        
+        # 分散の算出
+        self.var = 1. / N * np.sum(self.sq, axis=0)
+        
+        # 標準偏差の計算
+        self.sqrtvar  = np.sqrt(self.var + self.eps)
+        
+        # 標準偏差の反転
+        self.ivar = 1. / self.sqrtvar
+        
+        # Normalizationの実行
+        self.xhat = self.xmu * self.ivar
+        
+        # gammaxの計算
+        gammax = self.gamma * self.xhat
+        
+        # 最終結果の計算
+        out = gammax + self.beta
+        
+        return out
+    
+    # 逆伝搬
+    def backward(self, dout):
+        
+        N, D = dout.shape
+        
+        # Step 9
+        dbeta = np.sum(dout, axis=0) ##
+        dgammax = dout
+        
+        # Step 8
+        dgamma = np.sum(dgammax*self.xhat, axis=0)
+        dxhat = dgammax * self.gamma
+        
+        # Step 7
+        divar = np.sum(dxhat*self.xmu, axis=0)
+        dxmu1 = dxhat*self.ivar
+        
+        # Step 6
+        dsqrtvar = -1./(self.sqrtvar**2)*divar
+        
+        # Step 5
+        dvar = 0.5 * 1./np.sqrt(self.var+self.eps) * dsqrtvar
+        
+        # Step 4
+        dsq = 1./N*np.ones((N, D)) * dvar
+                          
+        # Step 3
+        dxmu2 = 2*self.xmu*dsq
+        
+        # Step 2
+        dx1 = (dxmu1+dxmu2)
+        dmu = -1 * np.sum(dxmu1+dxmu2, axis=0)
+        
+        # Step 1
+        dx2 = 1./N*np.ones((N, D))*dmu
+                          
+        # Step 0
+        dx = dx1 + dx2
+        
+        return dgamma, dbeta, dx
+
+print('自分の作成したBatch Normalizationクラスで確認')
+# print(mini_batch_array)
+
+batch_norm = BatchNormalization(1.0, 0.0, 10-9)    
+out = batch_norm.forward(mini_batch_array)
+print('shape:'+str(out.shape))
+print('mean:'+str(np.mean(out)))
+print('var:'+str(np.var(out)))
+
+dgamma, dbeta, dx = batch_norm.backward(out)
+print(dx)
+print(dgamma)
+print(dbeta)
 
 
 

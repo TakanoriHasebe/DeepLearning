@@ -12,7 +12,6 @@ Created on Fri Feb 24 11:52:37 2017
 
 import numpy as np
 
-# Batch Normalization
 class BatchNormalization:
     """
     http://arxiv.org/abs/1502.03167
@@ -52,7 +51,6 @@ class BatchNormalization:
                         
         if train_flg:
             mu = x.mean(axis=0)
-            print('mu:'+str(mu))
             xc = x - mu
             var = np.mean(xc**2, axis=0)
             std = np.sqrt(var + 10e-7)
@@ -66,12 +64,10 @@ class BatchNormalization:
             self.running_var = self.momentum * self.running_var + (1-self.momentum) * var            
         else:
             xc = x - self.running_mean
-            xn = xc / ((np.sqrt(self.std + 10e-7)))
+            xn = xc / ((np.sqrt(self.running_var + 10e-7)))
             
-         
-        return xn
-        # out = self.gamma * xn + self.beta 
-        # return out
+        out = self.gamma * xn + self.beta 
+        return out
 
     def backward(self, dout):
         if dout.ndim != 2:
@@ -98,14 +94,7 @@ class BatchNormalization:
         self.dbeta = dbeta
         
         return dx
-    
-batch_norm = BatchNormalization(1, 0) 
-mini_batch_array = np.array([[1, 2, 3, 4], [5, 6, 7, 8]])
-# mini_batch_array = np.array([[1, 2, 3, 4]])
-res = batch_norm.forward(mini_batch_array)
-# print('res:'+str(res))
-print('res.mean:'+str(np.mean(res)))
-print('res.var:'+str(np.var(res)))
+
 
 
 def batchnorm_forward(x, gamma, beta, eps):

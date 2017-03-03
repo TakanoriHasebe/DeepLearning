@@ -19,7 +19,7 @@ multi_layer_network.py : 最初はMNISTを学習。誤差逆伝播法を用い, 
   - 参考url : https://github.com/oreilly-japan/deep-learning-from-scratch/blob/master/common/multi_layer_net.py   
   
 ---
-make_trainer.py : multi_layer_network.pyを用いて勾配の算出を行い,     
+make_trainer.py : multi_layer_network.pyを用いて勾配の算出を行い, ニューラルネットワークの訓練を行う   
 
 - 課題点について  
   - 初期化関数群  
@@ -31,8 +31,13 @@ make_trainer.py : multi_layer_network.pyを用いて勾配の算出を行い,
   - ミニバッチ学習の際の繰り返しの回数の設定について  
   - ミニバッチ学習とバッチ学習  
   - train_step関数とtrain関数  
+  - 勾配(optimizer)の書き方  
 
 ---  
 learning_mnsit.py : multi_layer_network.pyとmake_trainer.pyを用いて実際の学習を行うプログラム  
 
--  課題点について  
+-  課題点について 
+  -  特になし
+
+---
+

@@ -17,7 +17,6 @@ Batch Normalizationを行うクラスを作成する
 
 参考url
 https://github.com/oreilly-japan/deep-learning-from-scratch/blob/master/common/layers.py
-https://kratzert.github.io/2016/02/12/understanding-the-gradient-flow-through-the-batch-normalization-layer.html
 """
 
 import numpy as np

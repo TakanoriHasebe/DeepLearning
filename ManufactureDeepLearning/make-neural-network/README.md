@@ -49,5 +49,9 @@ make_batch_normalization.py : Batch Normalizationを自分で実装したクラ�
   - 活性化関数に入力するミニバッチ全体の配列に対して, データの標準化をかけるということに注意
   - 参考url
   - https://github.com/oreilly-japan/deep-learning-from-scratch/blob/master/common/layers.py
-  - https://github.com/oreilly-japan/deep-learning-from-scratch/blob/master/common/layers.py
+  - https://kratzert.github.io/2016/02/12/understanding-the-gradient-flow-through-the-batch-normalization-layer.html
+
+---
+data_normalization.py : データの正規化について書いてある
+
 

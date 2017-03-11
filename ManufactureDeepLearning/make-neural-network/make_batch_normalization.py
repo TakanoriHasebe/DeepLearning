@@ -23,104 +23,106 @@ import numpy as np
 import time
 from scipy.stats import zscore
 
+# 教科書のBatchNormalization
+class BatchNormalization:
+    """
+    http://arxiv.org/abs/1502.03167
+    """
+    def __init__(self, gamma, beta, momentum=0.9, running_mean=None, running_var=None):
+        self.gamma = gamma
+        self.beta = beta
+        self.momentum = momentum
+        self.input_shape = None # Conv層の場合は4次元、全結合層の場合は2次元  
 
-def batchnorm_forward(x, gamma, beta, eps):
+        # テスト時に使用する平均と分散
+        self.running_mean = running_mean
+        self.running_var = running_var  
+        
+        # backward時に使用する中間データ
+        self.batch_size = None
+        self.xc = None
+        self.std = None
+        self.dgamma = None
+        self.dbeta = None
 
-  N, D = x.shape
+    def forward(self, x, train_flg=True):
+        self.input_shape = x.shape
+        
+        # 2次元でない場合
+        if x.ndim != 2:
+            N, C, H, W = x.shape
+            x = x.reshape(N, -1)
 
-  #step1: calculate mean
-  mu = 1./N * np.sum(x, axis = 0)
+        out = self.__forward(x, train_flg)
+        
+        return out.reshape(*self.input_shape)
+            
+    def __forward(self, x, train_flg):
+        if self.running_mean is None:
+            N, D = x.shape
+            self.running_mean = np.zeros(D)
+            self.running_var = np.zeros(D)
+                        
+        if train_flg:
+            mu = x.mean(axis=0)
+            xc = x - mu
+            var = np.mean(xc**2, axis=0)
+            std = np.sqrt(var + 10e-9)
+            xn = xc / std
+            
+            self.batch_size = x.shape[0]
+            self.xc = xc
+            self.xn = xn
+            self.std = std
+            self.running_mean = self.momentum * self.running_mean + (1-self.momentum) * mu
+            self.running_var = self.momentum * self.running_var + (1-self.momentum) * var            
+        else:
+            xc = x - self.running_mean
+            xn = xc / ((np.sqrt(self.running_var + 10e-7)))
+            
+        out = self.gamma * xn + self.beta 
+        return out
 
-  #step2: subtract mean vector of every trainings example
-  xmu = x - mu
+    def backward(self, dout):
+        
+        # ２次元でない場合
+        if dout.ndim != 2:
+            N, C, H, W = dout.shape
+            dout = dout.reshape(N, -1)
 
-  #step3: following the lower branch - calculation denominator
-  sq = xmu ** 2
+        dx = self.__backward(dout)
 
-  #step4: calculate variance
-  var = 1./N * np.sum(sq, axis = 0)
+        dx = dx.reshape(*self.input_shape)
+        return dx
 
-  #step5: add eps for numerical stability, then sqrt
-  sqrtvar = np.sqrt(var + eps)
+    def __backward(self, dout):
+        dbeta = dout.sum(axis=0)
+        dgamma = np.sum(self.xn * dout, axis=0)
+        dxn = self.gamma * dout
+        dxc = dxn / self.std
+        dstd = -np.sum((dxn * self.xc) / (self.std * self.std), axis=0)
+        dvar = 0.5 * dstd / self.std
+        dxc += (2.0 / self.batch_size) * self.xc * dvar
+        dmu = np.sum(dxc, axis=0)
+        dx = dxc - dmu / self.batch_size
+        
+        self.dgamma = dgamma
+        self.dbeta = dbeta
+        
+        return dx
 
-  #step6: invert sqrtwar
-  ivar = 1./sqrtvar
-
-  #step7: execute normalization
-  xhat = xmu * ivar
-
-  #step8: Nor the two transformation steps
-  gammax = gamma * xhat
-
-  #step9
-  out = gammax + beta
-
-  #store intermediate
-  cache = (xhat,gamma,xmu,ivar,sqrtvar,var,eps)
-
-  return out, cache
-
-# ミニバッチの配列
-# mini_batch_array = np.random.randn(2, 3)
-print('順伝搬の計算')
-mini_batch_array = np.array([[1, 2, 3, 4], [5, 6, 7, 8]])
-out, cache = batchnorm_forward(mini_batch_array, 1.0, 0.0, 10-9)
-print('out.shape:'+str(out.shape))
-print(np.mean(out))
-print(np.var(out))
-print(cache)
+print('答えのBatch Normalization')
+x = np.array([[1,2,3,4],[5,6,7,8]])
+batch_norm = BatchNormalization(1.0, 0.0)
+res0 = batch_norm.forward(x)
+print(res0)
+res = batch_norm.backward(res0)
+print(res)
 
 
-def batchnorm_backward(dout, cache):
 
-  #unfold the variables stored in cache
-  xhat,gamma,xmu,ivar,sqrtvar,var,eps = cache
 
-  #get the dimensions of the input/output
-  N,D = dout.shape
-
-  #step9
-  dbeta = np.sum(dout, axis=0)
-  dgammax = dout #not necessary, but more understandable
-
-  #step8
-  dgamma = np.sum(dgammax*xhat, axis=0)
-  dxhat = dgammax * gamma
-
-  #step7
-  divar = np.sum(dxhat*xmu, axis=0)
-  dxmu1 = dxhat * ivar
-
-  #step6
-  dsqrtvar = -1. /(sqrtvar**2) * divar
-
-  #step5
-  dvar = 0.5 * 1. /np.sqrt(var+eps) * dsqrtvar
-
-  #step4
-  dsq = 1. /N * np.ones((N,D)) * dvar
-
-  #step3
-  dxmu2 = 2 * xmu * dsq
-
-  #step2
-  dx1 = (dxmu1 + dxmu2)
-  dmu = -1 * np.sum(dxmu1+dxmu2, axis=0)
-
-  #step1
-  dx2 = 1. /N * np.ones((N,D)) * dmu
-
-  #step0
-  dx = dx1 + dx2
-
-  return dx, dgamma, dbeta
-print('')
-print('逆伝搬の計算')
-dx, dgamma, dbeta = batchnorm_backward(out, cache)
-print(dx)
-print(dgamma)
-print(dbeta)
-
+# Batch Normalization
 class BatchNormalization:
     
     # 初期化変数
@@ -139,8 +141,6 @@ class BatchNormalization:
         self.sqrtvar = None # 標準偏差
         self.ivar = None # 標準偏差の反転
         self.xhat = None # Normalizationした配列
-        
-        # backward
         
 
     # 順伝搬
@@ -217,20 +217,107 @@ class BatchNormalization:
         dx = dx1 + dx2
         
         return dgamma, dbeta, dx
-
+print('')
 print('自分の作成したBatch Normalizationクラスで確認')
 # print(mini_batch_array)
-
-batch_norm = BatchNormalization(1.0, 0.0, 10-9)    
-out = batch_norm.forward(mini_batch_array)
-print('shape:'+str(out.shape))
-print('mean:'+str(np.mean(out)))
-print('var:'+str(np.var(out)))
-
+# mini_batch_array = np.array([[1, 2, 3, 4], [5, 6, 7, 8]])
+batch_norm = BatchNormalization(np.ones(4), np.zeros(4), 10-9)    
+out = batch_norm.forward(x)
+print(out)
+# print('shape:'+str(out.shape))
+# print('mean:'+str(np.mean(out)))
+# print('var:'+str(np.var(out)))
 dgamma, dbeta, dx = batch_norm.backward(out)
-print(dx)
-print(dgamma)
-print(dbeta)
+print('dx:'+str(dx))
+# print('dgamma:'+str(dgamma))
+# print('dbeta:'+str(dbeta))
 
+print('blogのBatch Normalization')
+def batchnorm_forward(x, gamma, beta, eps):
 
+  N, D = x.shape
+
+  #step1: calculate mean
+  mu = 1./N * np.sum(x, axis = 0)
+
+  #step2: subtract mean vector of every trainings example
+  xmu = x - mu
+
+  #step3: following the lower branch - calculation denominator
+  sq = xmu ** 2
+
+  #step4: calculate variance
+  var = 1./N * np.sum(sq, axis = 0)
+
+  #step5: add eps for numerical stability, then sqrt
+  sqrtvar = np.sqrt(var + eps)
+
+  #step6: invert sqrtwar
+  ivar = 1./sqrtvar
+
+  #step7: execute normalization
+  xhat = xmu * ivar
+
+  #step8: Nor the two transformation steps
+  gammax = gamma * xhat
+
+  #step9
+  out = gammax + beta
+
+  #store intermediate
+  cache = (xhat,gamma,xmu,ivar,sqrtvar,var,eps)
+
+  return out, cache
+
+def batchnorm_backward(dout, cache):
+
+  #unfold the variables stored in cache
+  xhat,gamma,xmu,ivar,sqrtvar,var,eps = cache
+
+  #get the dimensions of the input/output
+  N,D = dout.shape
+
+  #step9
+  dbeta = np.sum(dout, axis=0)
+  dgammax = dout #not necessary, but more understandable
+
+  #step8
+  dgamma = np.sum(dgammax*xhat, axis=0)
+  dxhat = dgammax * gamma
+
+  #step7
+  divar = np.sum(dxhat*xmu, axis=0)
+  dxmu1 = dxhat * ivar
+
+  #step6
+  dsqrtvar = -1. /(sqrtvar**2) * divar
+
+  #step5
+  dvar = 0.5 * 1. /np.sqrt(var+eps) * dsqrtvar
+
+  #step4
+  dsq = 1. /N * np.ones((N,D)) * dvar
+
+  #step3
+  dxmu2 = 2 * xmu * dsq
+
+  #step2
+  dx1 = (dxmu1 + dxmu2)
+  
+  dmu = -1 * np.sum(dxmu1+dxmu2, axis=0)
+
+  #step1
+  dx2 = 1. /N * np.ones((N,D)) * dmu
+  
+  #step0
+  dx = dx1 + dx2
+
+  return dx, dgamma, dbeta, dx2
+
+# x = np.array([[1,2,3,4],[5,6,7,8]])
+out, cache = batchnorm_forward(x, 1.0, 0.0, 10e-9)
+# print(out)
+# print(cache)
+dx, dgamma, dbeta, dx2 = batchnorm_backward(out, cache)
+print('dx:'+str(dx))
 

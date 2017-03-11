@@ -10,6 +10,7 @@ Created on Thu Feb 23 15:23:20 2017
 活性化関数に対して重みを決定する
 """
 import numpy as np
+import time
 
 class DecisionWeight:
     
@@ -23,10 +24,17 @@ class DecisionWeight:
     # 活性化関数の種類, 入力ノード, 出力ノード
     def decision(self, activation_type, input_node_num, output_node_num):
         
-        weight_linear = np.random.randn(input_node_num, output_node_num) / np.sqrt(input_node_num)
+        weight_linear = np.random.randn(input_node_num, output_node_num) / np.sqrt(input_node_num) #  実際に用いる
+        # weight_linear = np.random.randn(input_node_num, output_node_num)
         weight_non_linear = np.random.randn(input_node_num, output_node_num) * np.sqrt(2.0 / input_node_num)
         
         if activation_type == 'Sigmoid' or 'Tanh':
             return weight_linear
         elif activation_type == 'ReLU':
             return weight_non_linear
+        else:
+            print('活性化レイヤが存在しません')
+
+
+
+

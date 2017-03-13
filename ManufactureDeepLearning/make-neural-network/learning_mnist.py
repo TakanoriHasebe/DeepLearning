@@ -27,7 +27,7 @@ import time
 start = time.time()
 # networkの初期化
 # network = MultiLayerNetwork(input_size=784, hidden_size=150, output_size=10)
-network = MultiLayerNetworkExtend(input_size=784, hidden_size_list=[150], output_size=10)
+network = MultiLayerNetworkExtend(input_size=784, hidden_size_list=[100, 100, 100, 100], output_size=10)
 
 acc_list = list()
 for i in range(0, 50):

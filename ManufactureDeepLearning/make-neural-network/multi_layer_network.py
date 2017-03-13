@@ -63,7 +63,10 @@ class MultiLayerNetworkExtend:
         # ニューラルネットワークの層の設計
         self.layers = OrderedDict()
         
-        for i in range(len(hidden_size_list)+1):
+        # 層
+        self.length = len(hidden_size_list)
+        
+        for i in range(self.length+1):
             
             if i == 0: # 入力層
                 
@@ -167,10 +170,13 @@ class MultiLayerNetworkExtend:
             
         # 勾配を返す
         grads = {}
-        grads['W1'], grads['b1'] = self.layers['Affine1'].dW, self.layers['Affine1'].db
-        # grads['gamma1'], grads['beta1'] = self.layers['BatchNormalization1'].dgamma, self.layers['BatchNormalization1'].dbeta
-        grads['W2'], grads['b2'] = self.layers['Affine2'].dW, self.layers['Affine2'].db
-        # print(grads)
+        
+        for i in range(self.length+1):
+            
+            grads['W'+str(i+1)], grads['b'+str(i+1)] = self.layers['Affine'+str(i+1)].dW, self.layers['Affine'+str(i+1)].db
+            # grads['gamma1'], grads['beta1'] = self.layers['BatchNormalization1'].dgamma, self.layers['BatchNormalization1'].dbeta
+            # grads['W2'], grads['b2'] = self.layers['Affine2'].dW, self.layers['Affine2'].db
+            # print(grads)
         
         return grads
 

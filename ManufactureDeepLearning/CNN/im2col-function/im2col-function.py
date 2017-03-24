@@ -26,18 +26,18 @@ def im2col(input_data, filter_h, filter_w, stride=1, pad=0):
     col : 2次元配列
     """
     N, C, H, W = input_data.shape
-    print('N:'+str(N)+' C:'+str(C)+' H:'+str(H)+' W'+str(W))
+    # print('N:'+str(N)+' C:'+str(C)+' H:'+str(H)+' W'+str(W))
     out_h = (H + 2*pad - filter_h)//stride + 1
     out_w = (W + 2*pad - filter_w)//stride + 1
-    print('out_h:'+str(out_h), 'out_w:'+str(out_w))
+    # print('out_h:'+str(out_h), 'out_w:'+str(out_w))
 
     # ここでpaddingを施す
     img = np.pad(input_data, [(0,0), (0,0), (pad, pad), (pad, pad)], 'constant')
-    print('img.shape:'+str(img.shape))
+    # print('img.shape:'+str(img.shape))
     
     # 初期化
     col = np.zeros((N, C, filter_h, filter_w, out_h, out_w))
-    print('col.shape:'+str(col.shape))
+    # print('col.shape:'+str(col.shape))
 
     
     for y in range(filter_h): # 5
@@ -48,20 +48,20 @@ def im2col(input_data, filter_h, filter_w, stride=1, pad=0):
             x_max = x + stride*out_w
             # print(x_max)
             # print('x_max:'+str(x_max))
-            print(col)
+            # print(col)
             col[:, :, y, x, :, :] = img[:, :, y:y_max:stride, x:x_max:stride]
             # print(col)
             # print(col.shape)
             
-    print('col.shape:'+str(col.shape))
+    # print('col.shape:'+str(col.shape))
     col_temp = col.transpose(0, 4, 5, 1, 2, 3)
-    print('col.shape:'+str(col.shape))
-    print('N*out_h*out_w:'+str(N*out_h*out_w))
+    # print('col.shape:'+str(col.shape))
+    # print('N*out_h*out_w:'+str(N*out_h*out_w))
     col = col_temp.reshape(N*out_h*out_w, -1) # 行数の指定
     return col
 
 # バッチサイズ, チャンネル, 画像サイズ
-x1 = np.random.rand(1, 1, 2, 2)
+x1 = np.array([[[ [1,1,1,1],[2,2,2,2],[3,3,3,3],[4,4,4,4] ]]])
 # print(x1[0][0][0])
 # print(x1[0][0][1])
 # print(x1[0][0].shape)
@@ -70,6 +70,8 @@ print('')
 # フィルターの高さと幅
 col1 = im2col(x1, 2, 2, stride=1, pad=0)
 print('col1.shape:'+str(col1.shape))
+print(col1[6:10])
+
 
 
 

@@ -1,5 +1,6 @@
 ### フォルダの説明 
 
+* `chainer-gpu` : chainerでGPUを用いいる。
 * `CNN` : 教科書を参考に畳み込みネットワークを作成  
 * `make-neural-network` : 自分で作成したニューラルネットワークが入っている  
 * `search-hyper-parameter` : ニューラルネットワークのハイパーパラメーターを探索する。  

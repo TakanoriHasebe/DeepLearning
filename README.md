@@ -1,7 +1,7 @@
 ### フォルダの説明 
    
 * ManufactureDeepLearning : ゼロから作るDeep Learningを参照に作成された。  
-
+* udemy-deep-learning : Lazy Programmerの講義を元に作成された。  
 ---
 ### 注意点
 

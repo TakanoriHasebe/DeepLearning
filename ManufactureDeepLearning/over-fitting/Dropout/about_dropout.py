@@ -22,6 +22,7 @@ class Dropout:
     def forward(self, x, train_flg=True):
         if train_flg:
             self.mask = np.random.rand(*x.shape) > self.dropout_ratio
+            # print(self.mask)
             return x * self.mask
         else:
             return x * (1.0 - self.dropout_ratio)
@@ -29,13 +30,16 @@ class Dropout:
     def backward(self, dout):
         return dout * self.mask
 
-arr = np.random.rand(10)
-arr1 = np.random.rand(*arr.shape) # 
-print(arr1.shape)
-mask = None
-mask = arr1 > 0.5
-print(arr1)
-print(mask)
-print(arr1 * mask)
+x = np.array([1,2,3,4,5])
+drop = Dropout()
+res = drop.forward(x)
+print(res)
+res = drop.backward(res)
+
+
+
+
+
+
 
 
